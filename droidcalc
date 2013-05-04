@@ -1,0 +1,147 @@
+package jake.ucd;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.text.Editable;
+import android.view.*;
+//import android.view.View.OnClickListener;
+import android.widget.*;
+
+import java.util.*;
+//import java.lang.*;
+
+import jake.ucd.R;
+//why abstract?
+// needs to implement multiple views
+public class DroidCalcActivity extends Activity implements View.OnClickListener{//onKeyListener??
+    /** Called when the activity is first created. */
+    //@Override
+  	private Button calc;
+		private Button clear;
+		private EditText inputWindow;
+		private TextView answer;
+		private Stack numbers = new Stack();
+//		private Stack operands = new Stack();
+	    		
+	 public void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        setContentView(R.layout.main);
+	       	findViewById(R.id.button1).setOnClickListener(this);
+	        findViewById(R.id.button2).setOnClickListener(this);
+	        findViewById(R.id.textView1).setBackgroundColor(0xffffffff);
+	        calc = (Button)findViewById(R.id.button1);
+	        clear = (Button)findViewById(R.id.button2);
+	        inputWindow = (EditText)findViewById(R.id.editText1);
+	        answer = (TextView)findViewById(R.id.textView1);
+	        calc.setText("Calculate");
+	        clear.setText("Clear");
+	    }
+	 
+	 public boolean isInt(String s){
+		
+		 try {
+			    int x = Integer.parseInt(s);
+			    return true;
+			}
+			catch(NumberFormatException nFE) {
+			    return false;
+			}
+	 }
+	 
+	 public void Calculate(String formula){
+		
+		 StringTokenizer st1 = new StringTokenizer(formula," ");
+		 String equation = new String();
+		 char operand;
+		 int number;
+		 int total = 0;
+		 
+		 while(st1.hasMoreTokens()){
+			 String next = st1.nextToken();
+			 
+			 if(isInt(next)) numbers.push(next);
+			 else if (next.equals("+")){
+				 total = Integer.parseInt(numbers.peek().toString()) + Integer.parseInt(st1.nextToken().toString());
+				 numbers.push(Integer.toString(total));
+			}
+			 else if (next.equals("-")){
+				 total = Integer.parseInt(numbers.peek().toString()) - Integer.parseInt(st1.nextToken().toString());
+				 numbers.push(Integer.toString(total));
+			}
+			 else if (next.equals("*")){
+				 total = Integer.parseInt(numbers.peek().toString()) * Integer.parseInt(st1.nextToken().toString());
+				 numbers.push(Integer.toString(total));
+			}
+			 else if (next.equals("/")){
+				 total = Integer.parseInt(numbers.peek().toString()) / Integer.parseInt(st1.nextToken().toString());
+				 numbers.push(Integer.toString(total));
+			}
+			 else if (next.equals("^")){
+				 total = (int) Math.pow(Integer.parseInt(numbers.peek().toString()),Integer.parseInt(st1.nextToken().toString()));
+				 numbers.push(Integer.toString(total));
+			}
+			
+		 }
+		 //numbers.pop();
+		 answer.setText(numbers.peek().toString());
+
+	 }
+	 
+	 public void Clear(){
+		 inputWindow.setText("");
+		 answer.setText("");
+	}
+	
+	public void onClick(View v) {
+		    if(v.getId() == R.id.button1) {
+		    	//String formula = new String();
+		    	
+		    	Editable e = inputWindow.getText();
+		    	String formula = e.toString();
+		        Calculate(formula);
+		    }else if(v.getId() == R.id.button2) {
+		        Clear();
+		    }
+	}
+
+	   
+   
+}
+
+
+
+/////main.xml ///
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    </EditText>
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.28" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+/>
